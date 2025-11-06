@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import lamarajaLogo from "./assets/lamaraja.png";
+import lamarajaLogo from "./assets/lamaraja-logo.png";
 import {
   Plus,
   Search,
