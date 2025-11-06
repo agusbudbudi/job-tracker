@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import lamarajaLogo from "./assets/lamaraja.png";
 import {
   Plus,
   Search,
@@ -7,7 +8,7 @@ import {
   Calendar,
   Briefcase,
   TrendingUp,
-  Clock,
+  CheckCircle,
   ChevronDown,
 } from "lucide-react";
 import "./utils/storage"; // Import storage mock
@@ -186,9 +187,12 @@ const App = () => {
       return;
     }
 
+    const todayISO = new Date().toISOString().split("T")[0];
+
     const newApp = {
       id: generateId(),
       ...formData,
+      appliedDate: formData.appliedDate || todayISO,
       createdAt: new Date().toISOString(),
       logActivity: [addLogActivity(formData.status)],
     };
@@ -203,7 +207,7 @@ const App = () => {
         level: "",
         jobLink: "",
         status: "Draft",
-        appliedDate: "",
+        appliedDate: todayISO,
         notes: "",
       });
     } catch (error) {
@@ -302,8 +306,8 @@ const App = () => {
     const totalLogs = activityLogs.length;
 
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
-        <div className="max-w-6xl mx-auto p-6">
+      <div className="min-h-screen bg-gradient-to-br from-white via-blue-50 to-blue-50">
+        <div className="max-w-6xl mx-auto px-4 py-6 sm:px-6">
           <button
             onClick={() => setView("list")}
             className="flex items-center gap-2 text-slate-600 hover:text-slate-900 mb-6 transition-colors cursor-pointer"
@@ -312,8 +316,8 @@ const App = () => {
             <span className="font-medium">Back to Applications</span>
           </button>
 
-          <div className="bg-white rounded-2xl shadow-xs border border-slate-200 overflow-hidden">
-            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-8 text-white">
+          <div className="bg-white rounded-2xl shadow-xs border border-slate-100 overflow-hidden">
+            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-6 sm:px-8 sm:py-8 text-white">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <p className="text-blue-100 text-sm font-medium mb-2">
@@ -336,8 +340,8 @@ const App = () => {
               </div>
             </div>
 
-            <div className="p-8">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div className="px-6 py-8 sm:px-8">
+              <div className="grid grid-cols-1 md:grid-cols-[2.5fr_minmax(0,1fr)] gap-6 mb-8">
                 <div className="space-y-4">
                   <div>
                     <label className="text-sm font-medium text-slate-500 block mb-1">
@@ -364,7 +368,7 @@ const App = () => {
                         href={selectedApp.jobLink}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-blue-600 hover:text-blue-700 flex items-center gap-2 font-medium cursor-pointer"
+                        className="text-blue-600 hover:text-blue-700 inline-flex items-center gap-2 font-medium cursor-pointer"
                       >
                         View Job Posting <ExternalLink size={16} />
                       </a>
@@ -425,13 +429,7 @@ const App = () => {
                       onChange={(e) => setNotesDraft(e.target.value)}
                       className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none min-h-[120px]"
                     />
-                    <div className="flex gap-3 mt-3">
-                      <button
-                        onClick={handleNotesSave}
-                        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium cursor-pointer"
-                      >
-                        Save Notes
-                      </button>
+                    <div className="flex gap-3 mt-3 justify-end">
                       <button
                         onClick={() => {
                           setNotesDraft(selectedApp.notes || "");
@@ -441,10 +439,16 @@ const App = () => {
                       >
                         Cancel
                       </button>
+                      <button
+                        onClick={handleNotesSave}
+                        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium cursor-pointer"
+                      >
+                        Save Notes
+                      </button>
                     </div>
                   </div>
                 ) : (
-                  <div className="bg-slate-50 rounded-xl p-4 border border-slate-200">
+                  <div className="bg-slate-50 rounded-xl p-4 border border-slate-100">
                     <p className="text-slate-700 whitespace-pre-wrap">
                       {selectedApp.notes || "No notes added"}
                     </p>
@@ -458,7 +462,7 @@ const App = () => {
                 </label>
                 {activityLogs.length > 0 ? (
                   <div className="relative pl-0">
-                    <div className="absolute left-[16px] top-2 bottom-2 w-px bg-slate-200 -translate-x-1/2 transform" />
+                    <div className="absolute left-[16px] top-2 bottom-2 w-px bg-slate-100 -translate-x-1/2 transform" />
                     <div className="space-y-4">
                       {activityLogs.map((log, index) => {
                         const isLatest = index === 0;
@@ -501,7 +505,7 @@ const App = () => {
                 )}
               </div>
 
-              <div className="mt-8 pt-6 border-t border-slate-200">
+              <div className="mt-8 pt-6 border-t border-slate-100">
                 <button
                   onClick={() => handleDelete(selectedApp.id)}
                   className="px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors font-medium cursor-pointer"
@@ -517,54 +521,90 @@ const App = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
-      <div className="max-w-7xl mx-auto p-6">
+    <div className="min-h-screen bg-gradient-to-br from-white via-blue-50 to-blue-50">
+      <div className="max-w-7xl mx-auto px-4 py-6 sm:px-6">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-slate-900 mb-2">
-            Job Application Tracker
-          </h1>
+          <div className="flex items-center gap-3 mb-2">
+            <img
+              src={lamarajaLogo}
+              alt="Lamaraja Logo"
+              className="h-20 w-auto rounded-full object-cover"
+            />
+            {/* <h1 className="text-3xl font-bold text-slate-900">
+              Job Application Tracker
+            </h1> */}
+          </div>
           <p className="text-slate-600">
-            Track and manage your job applications
+            <b>Job Application Tracker</b> | Track and manage your job
+            applications
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-white rounded-2xl p-6 shadow-xs border border-slate-200">
-            <div className="flex items-center justify-between mb-2">
-              <Briefcase className="text-blue-600" size={24} />
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <div className="rounded-2xl p-6  bg-blue-100/80">
+            <div className="flex justify-between items-center gap-4">
+              <div>
+                <p className="text-sm font-medium text-blue-700 tracking-wide">
+                  Total Applications
+                </p>
+                <p className="text-3xl font-bold text-blue-900 mt-2">
+                  {stats.total}
+                </p>
+              </div>
+              <div className="h-12 w-12 rounded-full bg-blue-200/80 flex items-center justify-center">
+                <Briefcase className="text-blue-600" size={24} />
+              </div>
             </div>
-            <p className="text-3xl font-bold text-slate-900">{stats.total}</p>
-            <p className="text-slate-600 text-sm">Total Applications</p>
           </div>
-          <div className="bg-white rounded-2xl p-6 shadow-xs border border-slate-200">
-            <div className="flex items-center justify-between mb-2">
-              <TrendingUp className="text-green-600" size={24} />
+          <div className="rounded-2xl p-6  bg-yellow-100/80">
+            <div className="flex justify-between items-center gap-4">
+              <div>
+                <p className="text-sm font-medium text-yellow-700 tracking-wide">
+                  Applied
+                </p>
+                <p className="text-3xl font-bold text-yellow-900 mt-2">
+                  {stats.applied}
+                </p>
+              </div>
+              <div className="h-12 w-12 rounded-full bg-yellow-200/80 flex items-center justify-center">
+                <TrendingUp className="text-yellow-600" size={24} />
+              </div>
             </div>
-            <p className="text-3xl font-bold text-slate-900">{stats.applied}</p>
-            <p className="text-slate-600 text-sm">Applied</p>
           </div>
-          <div className="bg-white rounded-2xl p-6 shadow-xs border border-slate-200">
-            <div className="flex items-center justify-between mb-2">
-              <Calendar className="text-purple-600" size={24} />
+          <div className="rounded-2xl p-6  bg-purple-100/80">
+            <div className="flex justify-between items-center gap-4">
+              <div>
+                <p className="text-sm font-medium text-purple-700  tracking-wide">
+                  In Interview
+                </p>
+                <p className="text-3xl font-bold text-purple-900 mt-2">
+                  {stats.interviewing}
+                </p>
+              </div>
+              <div className="h-12 w-12 rounded-full bg-purple-200/80 flex items-center justify-center">
+                <Calendar className="text-purple-600" size={24} />
+              </div>
             </div>
-            <p className="text-3xl font-bold text-slate-900">
-              {stats.interviewing}
-            </p>
-            <p className="text-slate-600 text-sm">In Interview</p>
           </div>
-          <div className="bg-white rounded-2xl p-6 shadow-xs border border-slate-200">
-            <div className="flex items-center justify-between mb-2">
-              <Clock className="text-orange-600" size={24} />
+          <div className="rounded-2xl p-6  bg-green-100/80">
+            <div className="flex justify-between items-center gap-4">
+              <div>
+                <p className="text-sm font-medium text-green-700 tracking-wide">
+                  Offers
+                </p>
+                <p className="text-3xl font-bold text-green-900 mt-2">
+                  {stats.offering}
+                </p>
+              </div>
+              <div className="h-12 w-12 rounded-full bg-green-200/80 flex items-center justify-center">
+                <CheckCircle className="text-green-600" size={24} />
+              </div>
             </div>
-            <p className="text-3xl font-bold text-slate-900">
-              {stats.offering}
-            </p>
-            <p className="text-slate-600 text-sm">Offers</p>
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-xs border border-slate-200 overflow-hidden">
-          <div className="p-6 border-b border-slate-200">
+        <div className="bg-white rounded-2xl shadow-xs border border-slate-100 overflow-hidden">
+          <div className="p-6 border-b border-slate-100">
             <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
               <div className="flex gap-3 w-full md:w-auto">
                 <div className="relative flex-1 md:w-80">
@@ -610,7 +650,7 @@ const App = () => {
           </div>
 
           {showAddForm && (
-            <div className="p-6 bg-white border-b border-slate-200">
+            <div className="p-6 bg-white border-b border-slate-100">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <input
                   type="text"
@@ -684,18 +724,18 @@ const App = () => {
                   className="px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none md:col-span-2"
                   rows="3"
                 />
-                <div className="md:col-span-2 flex gap-3">
-                  <button
-                    onClick={handleSubmit}
-                    className="px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors font-medium cursor-pointer"
-                  >
-                    Save Application
-                  </button>
+                <div className="md:col-span-2 flex gap-3 justify-end">
                   <button
                     onClick={() => setShowAddForm(false)}
                     className="px-6 py-3 bg-slate-200 text-slate-700 rounded-xl hover:bg-slate-300 transition-colors font-medium cursor-pointer"
                   >
                     Cancel
+                  </button>
+                  <button
+                    onClick={handleSubmit}
+                    className="px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors font-medium cursor-pointer"
+                  >
+                    Save Application
                   </button>
                 </div>
               </div>
@@ -726,11 +766,11 @@ const App = () => {
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-200">
+              <tbody className="divide-y divide-slate-100">
                 {filteredApplications.length === 0 ? (
                   <tr>
                     <td
-                      colSpan="5"
+                      colSpan="6"
                       className="px-6 py-12 text-center text-slate-500"
                     >
                       No applications found. Click Add Application to get
@@ -775,11 +815,9 @@ const App = () => {
                             target="_blank"
                             rel="noopener noreferrer"
                             onClick={(e) => e.stopPropagation()}
-                            className="text-blue-600 hover:text-blue-700 flex items-center gap-1.5 cursor-pointer"
+                            className="text-blue-600 hover:text-blue-700 inline-flex items-center gap-1.5 cursor-pointer"
                           >
-                            <span className="text-sm font-medium">
-                              View Job Link
-                            </span>
+                            <span className="text-sm font-medium">View</span>
                             <ExternalLink size={16} />
                           </a>
                         ) : (
