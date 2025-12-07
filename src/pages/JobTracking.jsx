@@ -281,6 +281,34 @@ const JobTracking = () => {
     return matchesStatus && matchesSearch;
   });
 
+  const statusPriority = {
+    Offering: 9,
+    Draft: 8,
+    "Head Interview": 7,
+    "User Interview": 6,
+    "Technical Test": 5,
+    "HR Interview": 4,
+    Applied: 3,
+    Ghosting: 2,
+    Rejected: 1,
+    Failed: 0,
+  };
+
+  const sortedApplications = [...filteredApplications].sort((a, b) => {
+    // Use spread to create a new array for sorting
+    const priorityA = statusPriority[a.status] || -1; // Default to lowest priority if status not found
+    const priorityB = statusPriority[b.status] || -1;
+
+    if (priorityA !== priorityB) {
+      return priorityB - priorityA; // Sort descending by priority (higher number comes first)
+    }
+
+    // Secondary sort: last updated time (descending)
+    const dateA = new Date(a.createdAt || a.appliedDate);
+    const dateB = new Date(b.createdAt || b.appliedDate);
+    return dateB.getTime() - dateA.getTime();
+  });
+
   const stats = {
     total: applications.length,
     applied: applications.filter((a) => a.status === "Applied").length,
@@ -643,12 +671,12 @@ const JobTracking = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
-            {filteredApplications.length === 0 ? (
+            {sortedApplications.length === 0 ? (
               <p className="col-span-full text-center text-slate-500 py-8">
                 No applications found. Click "Add Application" to get started!
               </p>
             ) : (
-              filteredApplications.map((app) => (
+              sortedApplications.map((app) => (
                 <JobCard
                   key={app.id}
                   job={app}
